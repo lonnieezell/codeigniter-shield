@@ -235,7 +235,7 @@ class Session implements AuthenticatorInterface
      */
     public function checkAction(UserIdentity $identity, string $token): bool
     {
-        if(!$this->loggedIn() && !$this->isPending()) {
+        if (! $this->loggedIn() && ! $this->isPending()) {
             throw new LogicException('Cannot get the User.');
         }
 
