@@ -142,6 +142,27 @@ final class HmacTest extends DatabaseTestCase
     }
 
     /**
+     * See https://github.com/codeigniter4/shield/issues/926
+     */
+    public function testExpireAll(): void
+    {
+        /** @var User $user */
+        $user = fake(UserModel::class);
+        $user->generateHmacToken('foo', expiresAt: '2024-10-01 12:20:00');
+        $user->generateHmacToken('bar');
+
+        $this->setMockIo([]);
+        $this->assertNotFalse(command('shield:hmac expireAll'));
+
+        $resultsString = $this->io->getOutputs();
+        $results       = explode("\n", trim($resultsString));
+
+        $this->assertCount(2, $results);
+        $this->assertSame('Hmac Key/Token ID: 1, already expired, skipped.', trim($results[0]));
+        $this->assertSame('Hmac Key/Token ID: 2, set as expired.', trim($results[1]));
+    }
+
+    /**
      * Set MockInputOutput and user inputs.
      *
      * @param list<string> $inputs User inputs

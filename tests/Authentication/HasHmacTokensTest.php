@@ -17,6 +17,8 @@ use CodeIgniter\Shield\Entities\AccessToken;
 use CodeIgniter\Shield\Entities\User;
 use CodeIgniter\Shield\Models\UserIdentityModel;
 use CodeIgniter\Shield\Models\UserModel;
+use DateInterval;
+use DateTime;
 use Tests\Support\DatabaseTestCase;
 
 /**
@@ -154,5 +156,58 @@ final class HasHmacTokensTest extends DatabaseTestCase
 
         $this->assertFalse($this->user->hmacTokenCant('foo:bar'));
         $this->assertTrue($this->user->hmacTokenCant('foo:baz'));
+    }
+
+    /**
+     * See https://github.com/codeigniter4/shield/issues/926
+     */
+    public function testGenerateTokenWithExpiration(): void
+    {
+        $token = $this->user->generateHmacToken('foo', ['foo:bar'], '2024-11-03 12:00:00');
+
+        $this->assertSame('2024-11-03 12:00:00', $this->user->getHmacTokenTimeToExpire($token, 'date'));
+
+        $token = $this->user->generateHmacToken('foo', ['foo:bar'], '1 month 1 year');
+
+        $expireDate = new DateTime();
+        $expireDate->add(DateInterval::createFromDateString('1 month 1 year'));
+
+        $this->assertSame($expireDate->format('Y-m-d h:i:s'), $this->user->getHmacTokenTimeToExpire($token, 'date'));
+    }
+
+    /**
+     * See https://github.com/codeigniter4/shield/issues/926
+     */
+    public function testSetTokenExpirationById(): void
+    {
+        $token = $this->user->generateHmacToken('foo', ['foo:bar']);
+
+        $this->assertNull($token->expires);
+
+        // true = updated row
+        $this->assertTrue($this->user->setHmacTokenExpirationById($token->id, '2024-11-03 12:00:00'));
+
+        $found = $this->user->getHmacTokenById($token->id);
+        $this->assertSame('2024-11-03 12:00:00', $this->user->getHmacTokenTimeToExpire($found, 'date'));
+    }
+
+    /**
+     * See https://github.com/codeigniter4/shield/issues/926
+     */
+    public function testIsHmacTokenExpired(): void
+    {
+        $token = $this->user->generateHmacToken('foo', ['foo:bar'], '2024-11-03 12:00:00');
+
+        $this->assertTrue($this->user->hasHmacTokenExpired($token));
+    }
+
+    /**
+     * See https://github.com/codeigniter4/shield/issues/926
+     */
+    public function testHmacTokenTimeToExpired(): void
+    {
+        $token = $this->user->generateHmacToken('foo', ['foo:bar'], '1 year');
+
+        $this->assertSame('in 11 months', $this->user->getHmacTokenTimeToExpire($token, 'human'));
     }
 }

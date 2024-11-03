@@ -24,8 +24,11 @@ use CodeIgniter\Shield\Entities\User;
 use CodeIgniter\Shield\Entities\UserIdentity;
 use CodeIgniter\Shield\Exceptions\LogicException;
 use CodeIgniter\Shield\Exceptions\ValidationException;
+use DateInterval;
+use DateTime;
 use Exception;
 use Faker\Generator;
+use InvalidArgumentException;
 use ReflectionException;
 
 class UserIdentityModel extends BaseModel
@@ -101,6 +104,43 @@ class UserIdentityModel extends BaseModel
         }
     }
 
+    private function checkExpiresAtFormat(string $expiresAt): string
+    {
+        if (! is_string($expiresAt)) {
+            throw new InvalidArgumentException('$expiresAt should be a string.');
+        }
+
+        $expireMatch = [];
+
+        // Check Y-m-d h:i:s format.
+        preg_match('/\d{4}-\d{2}-\d{2}.\d{2}:\d{2}:\d{2}/', $expiresAt, $expireMatch, PREG_UNMATCHED_AS_NULL);
+
+        // Format Y-m-d h:i:s not found.
+        if ($expireMatch === []) {
+            // Looking for relative format like 1 day, 2 weeks and process all
+            preg_match_all('/[1].(second|minute|hour|day|week|month|year)|[2,3,4,5,6,7,8,9].(seconds|minutes|hours|days|weeks|months|years)/', $expiresAt, $expireMatch, PREG_PATTERN_ORDER);
+
+            if ($expireMatch[0] !== []) {
+                // Dummy DateTime to add() DateInterval
+                $dateTime = new DateTime();
+
+                // Turn the preg_match array into string splitted by ' + '
+                // to be fed into DateTime->add() to generate new date
+                $relativeTime = implode(' + ', $expireMatch[0]);
+
+                // add relative formats
+                $dateTime->add(DateInterval::createFromDateString($relativeTime));
+
+                // return Dummy DateTime
+                return $dateTime->format('Y-m-d h:i:s');
+            }
+
+            throw new InvalidArgumentException('$expiresAt should be a DateTime string formatted as "Y-m-d h:i:s" or a DateTime relative formats.');
+        }
+
+        return $expiresAt;
+    }
+
     /**
      * Create an identity with 6 digits code for auth action
      *
@@ -144,12 +184,19 @@ class UserIdentityModel extends BaseModel
     /**
      * Generates a new personal access token for the user.
      *
-     * @param string       $name   Token name
-     * @param list<string> $scopes Permissions the token grants
+     * @param string       $name      Token name
+     * @param list<string> $scopes    Permissions the token grants
+     * @param string       $expiresAt Sets token expiration date. Accepts DateTime string formatted as 'Y-m-d h:i:s' or DateTime relative formats (1 day, 2 weeks, 6 months, 1 year) to be added to 'Time::now()'
+     *
+     * @throws InvalidArgumentException
      */
-    public function generateAccessToken(User $user, string $name, array $scopes = ['*']): AccessToken
+    public function generateAccessToken(User $user, string $name, array $scopes = ['*'], ?string $expiresAt = null): AccessToken
     {
         $this->checkUserId($user);
+
+        if ($expiresAt !== null && $expiresAt !== '' && $expiresAt !== '0') {
+            $expiresAt = $this->checkExpiresAtFormat($expiresAt);
+        }
 
         helper('text');
 
@@ -158,6 +205,7 @@ class UserIdentityModel extends BaseModel
             'user_id' => $user->id,
             'name'    => $name,
             'secret'  => hash('sha256', $rawToken = random_string('crypto', 64)),
+            'expires' => $expiresAt,
             'extra'   => serialize($scopes),
         ]);
 
@@ -224,6 +272,37 @@ class UserIdentityModel extends BaseModel
             ->findAll();
     }
 
+    /**
+     * Updates or sets expiration date of users' AccessToken or HMAC Token by ID. Returns updated row.
+     *
+     * @param string $expiresAt Expiration date. Accepts DateTime string formatted as 'Y-m-d h:i:s' or DateTime relative formats (1 day, 2 weeks, 6 months, 1 year) to be added to 'Time::now()'
+     * @param mixed  $id
+     */
+    public function setIdentityExpirationById($id, User $user, ?string $expiresAt = null, ?string $type_token = null): bool
+    {
+        $this->checkUserId($user);
+
+        if (! $expiresAt) {
+            throw new InvalidArgumentException("setIdentityExpirationById(): expiresAt argument can't be null.");
+        }
+
+        $expiresAt = $this->checkExpiresAtFormat($expiresAt);
+
+        $currentExpiration = $this->asObject(AccessToken::class)->find($id);
+
+        // d($currentExpiration);
+        if ($currentExpiration->expires !== $expiresAt) {
+            // throw new InvalidArgumentException(sprintf("User-id: %d type: %s id: %d expires:%s", $user->id,$type_token,$id,$expiresAt));
+            return $this->where('user_id', $user->id)
+                ->where('type', $type_token)
+                ->where('id', $id)
+                ->set(['expires' => $expiresAt])
+                ->update();
+        }
+
+        throw new InvalidArgumentException('setIdentityExpirationById(): No data to update. ID:' . $id . ' Expires at: ' . $expiresAt . ' curr_expires:' . $currentExpiration->expires . ' Result: ' . ($currentExpiration->expires !== $expiresAt));
+    }
+
     // HMAC
     /**
      * Find and Retrieve the HMAC AccessToken based on Token alone
@@ -242,15 +321,21 @@ class UserIdentityModel extends BaseModel
     /**
      * Generates a new personal access token for the user.
      *
-     * @param string       $name   Token name
-     * @param list<string> $scopes Permissions the token grants
+     * @param string       $name      Token name
+     * @param list<string> $scopes    Permissions the token grants
+     * @param string       $expiresAt Expiration date. Accepts DateTime string formatted as 'Y-m-d h:i:s' or DateTime relative formats (1 day, 2 weeks, 6 months, 1 year) to be added to 'Time::now()'
      *
      * @throws Exception
+     * @throws InvalidArgumentException
      * @throws ReflectionException
      */
-    public function generateHmacToken(User $user, string $name, array $scopes = ['*']): AccessToken
+    public function generateHmacToken(User $user, string $name, array $scopes = ['*'], ?string $expiresAt = null): AccessToken
     {
         $this->checkUserId($user);
+
+        if ($expiresAt !== null && $expiresAt !== '' && $expiresAt !== '0') {
+            $expiresAt = $this->checkExpiresAtFormat($expiresAt);
+        }
 
         $encrypter    = new HmacEncrypter();
         $rawSecretKey = $encrypter->generateSecretKey();
@@ -262,6 +347,7 @@ class UserIdentityModel extends BaseModel
             'name'    => $name,
             'secret'  => bin2hex(random_bytes(16)), // Key
             'secret2' => $secretKey,
+            'expires' => $expiresAt,
             'extra'   => serialize($scopes),
         ]);
 

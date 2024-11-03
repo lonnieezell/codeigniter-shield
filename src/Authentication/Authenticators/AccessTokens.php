@@ -157,6 +157,19 @@ class AccessTokens implements AuthenticatorInterface
 
         assert($token->last_used_at instanceof Time || $token->last_used_at === null);
 
+        // Is expired ?
+        if (
+            $token->expires
+            && $token->expires->isBefore(
+                Time::now()
+            )
+        ) {
+            return new Result([
+                'success' => false,
+                'reason'  => lang('Auth.oldToken'),
+            ]);
+        }
+
         // Hasn't been used in a long time
         if (
             $token->last_used_at
