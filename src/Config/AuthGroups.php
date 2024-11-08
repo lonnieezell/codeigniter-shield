@@ -79,7 +79,16 @@ class AuthGroups extends BaseConfig
         'users.edit'          => 'Can edit existing non-admin users',
         'users.delete'        => 'Can delete existing non-admin users',
         'beta.access'         => 'Can access beta-level features',
+        'test.permissions.one' => 'Can access permission one',
+        'test.permissions.two' => 'Can access permission two',
     ];
+        'admin.access'        => 'Can access the sites admin area',
+        'admin.settings'      => 'Can access the main site settings',
+        'users.manage-admins' => 'Can manage other admins',
+        'users.create'        => 'Can create new non-admin users',
+        'users.edit'          => 'Can edit existing non-admin users',
+        'users.delete'        => 'Can delete existing non-admin users',
+        'beta.access'         => 'Can access beta-level features',
 
     /**
      * --------------------------------------------------------------------
@@ -90,6 +99,34 @@ class AuthGroups extends BaseConfig
      * This defines group-level permissions.
      */
     public array $matrix = [
+        'superadmin' => [
+            'admin.*',
+            'users.*',
+            'beta.*',
+            'test.*',
+        ],
+        'admin' => [
+            'admin.access',
+            'users.create',
+            'users.edit',
+            'users.delete',
+            'beta.access',
+        ],
+        'developer' => [
+            'admin.access',
+            'admin.settings',
+            'users.create',
+            'users.edit',
+            'beta.access',
+            'test.permissions.*',
+        ],
+        'user' => [
+            'test.permissions.*',
+        ],
+        'beta' => [
+            'beta.access',
+        ],
+    ];
         'superadmin' => [
             'admin.*',
             'users.*',
@@ -113,5 +150,4 @@ class AuthGroups extends BaseConfig
         'beta' => [
             'beta.access',
         ],
-    ];
 }
