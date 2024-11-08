@@ -63,6 +63,21 @@ trait Authorizable
     }
 
     /**
+     * Checks if a permission string matches a permission wildcard.
+     *
+     * @param string $permission     The permission to check
+     * @param string $wildcard       The wildcard pattern
+     * @return bool
+     */
+    private function matchWildcard(string $permission, string $wildcard): bool
+    {
+        $pattern = '/^' . str_replace('\*', '.*', preg_quote($wildcard, '/')) . '$/';
+        return preg_match($pattern, $permission) === 1;
+    }
+        return $this;
+    }
+
+    /**
      * Removes one or more groups from the user.
      *
      * @return $this
@@ -274,6 +289,48 @@ trait Authorizable
             }
 
             foreach ($this->groupCache as $group) {
+                if (isset($matrix[$group])) {
+                    foreach ($matrix[$group] as $matrixPermission) {
+                        if ($this->matchWildcard($permission, $matrixPermission)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    {
+        // Get user's permissions and store in cache
+        $this->populatePermissions();
+
+        // Check the groups the user belongs to
+        $this->populateGroups();
+
+        // Get the group matrix
+        $matrix = setting('AuthGroups.matrix');
+
+        foreach ($permissions as $permission) {
+            // Permission must contain a scope and action
+            if (strpos($permission, '.') === false) {
+                throw new LogicException(
+                    'A permission must be a string consisting of a scope and action, like `users.create`.'
+                    . ' Invalid permission: ' . $permission
+                );
+            }
+
+            $permission = strtolower($permission);
+
+            // Check user's permissions
+            if (in_array($permission, $this->permissionsCache, true)) {
+                return true;
+            }
+
+            if (count($this->groupCache) === 0) {
+                return false;
+            }
+
+            foreach ($this->groupCache as $group) {
                 // Check exact match
                 if (isset($matrix[$group]) && in_array($permission, $matrix[$group], true)) {
                     return true;
@@ -286,7 +343,6 @@ trait Authorizable
                 }
             }
         }
-
         return false;
     }
 
