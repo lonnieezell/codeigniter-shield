@@ -85,9 +85,16 @@ class Group extends Entity
         }
 
         // Check wildcard match
-        $check = substr($permission, 0, strpos($permission, '.')) . '.*';
+        $checks = [];
+        $parts = explode('.', $permission);
+        for ($i = count($parts); $i > 0; $i--) {
+            $check = implode('.', array_slice($parts, 0, $i)) . '.*';
+            $checks[] = $check;
+        }
 
-        return $this->permissions !== null && $this->permissions !== [] && in_array($check, $this->permissions, true);
+        return $this->permissions !== null && 
+               $this->permissions !== [] && 
+               array_intersect($checks, $this->permissions);
     }
 
     /**
