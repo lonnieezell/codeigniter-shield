@@ -87,4 +87,19 @@ final class GroupTest extends TestCase
         $this->assertTrue($group2->can('users.edit'));
         $this->assertFalse($group2->can('foo.bar'));
     }
+    
+    public function testCanNestedPerms(): void
+    {
+        $group = $this->groups->info('user');
+        $group->addPermission('foo.bar.*');
+        $group->addPermission('foo.biz.buz.*');
+        $this->assertTrue($group->can('foo.bar'));
+        $this->assertTrue($group->can('foo.bar.baz'));
+        $this->assertTrue($group->can('foo.bar.buz'));        
+        $this->assertTrue($group->can('foo.bar.*'));
+        $this->assertTrue($group->can('foo.biz.buz'));
+        $this->assertFalse($group->can('foo.biz.*'));
+        $this->assertTrue($group->can('foo.biz.buz.bar'));
+        $this->assertFalse($group->can('foo.biz.bar.buz'));        
+    }    
 }
