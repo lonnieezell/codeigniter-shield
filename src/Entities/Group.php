@@ -95,7 +95,7 @@ class Group extends Entity
 
         return $this->permissions !== null
             && $this->permissions !== []
-            && array_intersect($checks, $this->permissions);
+            && !empty(array_intersect($checks, $this->permissions));
     }
 
     /**
