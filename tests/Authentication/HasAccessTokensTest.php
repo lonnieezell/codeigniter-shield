@@ -208,6 +208,6 @@ final class HasAccessTokensTest extends DatabaseTestCase
         $token = $this->user->generateAccessToken('foo', ['foo:bar'], '1 year');
         $this->user->setAccessToken($token);
 
-        $this->assertSame('in 11 months', $this->user->getAccessTokenTimeToExpire($this->user->currentAccessToken(), 'human'));
+        $this->assertSame('in 1 year', $this->user->getAccessTokenTimeToExpire($this->user->currentAccessToken(), 'human'));
     }
 }

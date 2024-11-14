@@ -208,6 +208,6 @@ final class HasHmacTokensTest extends DatabaseTestCase
     {
         $token = $this->user->generateHmacToken('foo', ['foo:bar'], '1 year');
 
-        $this->assertSame('in 11 months', $this->user->getHmacTokenTimeToExpire($token, 'human'));
+        $this->assertSame('in 1 year', $this->user->getHmacTokenTimeToExpire($token, 'human'));
     }
 }
