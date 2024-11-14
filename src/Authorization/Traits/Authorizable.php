@@ -287,7 +287,7 @@ trait Authorizable
                     $check    = implode('.', array_slice($parts, 0, $i)) . '.*';
                     $checks[] = $check;
                 }
-                if (isset($matrix[$group]) && array_intersect($checks, $matrix[$group])) {
+                if (isset($matrix[$group]) && array_intersect($checks, $matrix[$group]) !== []) {
                     return true;
                 }
             }
