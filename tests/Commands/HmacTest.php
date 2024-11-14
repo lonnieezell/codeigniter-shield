@@ -148,7 +148,7 @@ final class HmacTest extends DatabaseTestCase
     {
         /** @var User $user */
         $user = fake(UserModel::class);
-        $user->generateHmacToken('foo', expiresAt: '2024-10-01 12:20:00');
+        $user->generateHmacToken('foo', ['*'], '2024-10-01 12:20:00');
         $user->generateHmacToken('bar');
 
         $this->setMockIo([]);

@@ -165,24 +165,20 @@ trait HasHmacTokens
     /**
      * Checks if the provided Access Token has expired.
      *
-     * @return false|true|null Returns true if Access Token has expired, false if not, and null if the expire field is null
+     * @return bool|null Returns true if Access Token has expired, false if not, and null if the expire field is null
      */
     public function hasHmacTokenExpired(?AccessToken $accessToken): bool|null
     {
-        if (null === $accessToken->expires) {
-            return null;
-        }
-
-        return $accessToken->expires->isBefore(Time::now());
+        return $accessToken->expires !== null ? $accessToken->expires->isBefore(Time::now()) : null;
     }
 
     /**
      * Returns formatted date to expiration for provided Hmac Key/Token.
      *
-     * @param AcessToken $accessToken AccessToken
-     * @param string     $format      The return format - "date" or "human".  Date is 'Y-m-d h:i:s', human is 'in 2 weeks'
+     * @param AccessToken $accessToken AccessToken
+     * @param string      $format      The return format - "date" or "human".  Date is 'Y-m-d h:i:s', human is 'in 2 weeks'
      *
-     * @return false|true|null Returns true if Access Token has expired, false if not and null if the expire field is null
+     * @return string|null Returns a formatted expiration date or null if the expire field is not set.
      *
      * @throws InvalidArgumentException
      */
@@ -207,10 +203,10 @@ trait HasHmacTokens
     /**
      * Sets an expiration for Hmac Key/Token by ID.
      *
-     * @param int    $id        AccessTokens ID
+     * @param int    $id        AccessToken ID
      * @param string $expiresAt Expiration date. Accepts DateTime string formatted as 'Y-m-d h:i:s' or DateTime relative formats (1 day, 2 weeks, 6 months, 1 year) to be added to DateTime 'now'
      *
-     * @return false|true|null Returns true if token is updated, false if not.
+     * @return bool Returns true if expiration date is set or updated.
      */
     public function setHmacTokenExpirationById(int $id, string $expiresAt): bool
     {

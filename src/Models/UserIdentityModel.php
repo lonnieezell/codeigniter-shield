@@ -106,10 +106,6 @@ class UserIdentityModel extends BaseModel
 
     private function checkExpiresAtFormat(string $expiresAt): string
     {
-        if (! is_string($expiresAt)) {
-            throw new InvalidArgumentException('$expiresAt should be a string.');
-        }
-
         $expireMatch = [];
 
         // Check Y-m-d h:i:s format.
@@ -277,22 +273,18 @@ class UserIdentityModel extends BaseModel
      *
      * @param string $expiresAt Expiration date. Accepts DateTime string formatted as 'Y-m-d h:i:s' or DateTime relative formats (1 day, 2 weeks, 6 months, 1 year) to be added to 'Time::now()'
      * @param mixed  $id
+     *
+     * @return bool Returns true if expiration date was set or updated.
      */
     public function setIdentityExpirationById($id, User $user, ?string $expiresAt = null, ?string $type_token = null): bool
     {
         $this->checkUserId($user);
 
-        if (! $expiresAt) {
-            throw new InvalidArgumentException("setIdentityExpirationById(): expiresAt argument can't be null.");
-        }
-
         $expiresAt = $this->checkExpiresAtFormat($expiresAt);
 
-        $currentExpiration = $this->asObject(AccessToken::class)->find($id);
+        $currentExpiration = $this->where('user_id', $user->id)->where('id', $id)->asObject(AccessToken::class)->first();
 
-        // d($currentExpiration);
-        if ($currentExpiration->expires !== $expiresAt) {
-            // throw new InvalidArgumentException(sprintf("User-id: %d type: %s id: %d expires:%s", $user->id,$type_token,$id,$expiresAt));
+        if ($currentExpiration->expires !== null && $currentExpiration->expires !== $expiresAt) {
             return $this->where('user_id', $user->id)
                 ->where('type', $type_token)
                 ->where('id', $id)
@@ -300,7 +292,7 @@ class UserIdentityModel extends BaseModel
                 ->update();
         }
 
-        throw new InvalidArgumentException('setIdentityExpirationById(): No data to update. ID:' . $id . ' Expires at: ' . $expiresAt . ' curr_expires:' . $currentExpiration->expires . ' Result: ' . ($currentExpiration->expires !== $expiresAt));
+        return false;
     }
 
     // HMAC
