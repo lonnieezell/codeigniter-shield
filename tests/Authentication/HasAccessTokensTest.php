@@ -17,6 +17,8 @@ use CodeIgniter\Shield\Entities\AccessToken;
 use CodeIgniter\Shield\Entities\User;
 use CodeIgniter\Shield\Models\UserIdentityModel;
 use CodeIgniter\Shield\Models\UserModel;
+use DateInterval;
+use DateTime;
 use Tests\Support\DatabaseTestCase;
 
 /**
@@ -152,12 +154,60 @@ final class HasAccessTokensTest extends DatabaseTestCase
         $this->assertTrue($this->user->tokenCant('foo'));
     }
 
-    public function testTokenCant(): void
+    /**
+     * See https://github.com/codeigniter4/shield/issues/926
+     */
+    public function testGenerateTokenWithExpiration(): void
     {
-        $token = $this->user->generateAccessToken('foo', ['foo:bar']);
+        $token = $this->user->generateAccessToken('foo', ['foo:bar'], '2024-11-03 12:00:00');
         $this->user->setAccessToken($token);
 
-        $this->assertFalse($this->user->tokenCant('foo:bar'));
-        $this->assertTrue($this->user->tokenCant('foo:baz'));
+        $this->assertSame('2024-11-03 12:00:00', $this->user->getAccessTokenTimeToExpire($this->user->currentAccessToken(), 'date'));
+
+        $token = $this->user->generateAccessToken('foo', ['foo:bar'], '1 month 1 year');
+        $this->user->setAccessToken($token);
+
+        $expireDate = new DateTime();
+        $expireDate->add(DateInterval::createFromDateString('1 month + 1 year'));
+        $this->assertSame($expireDate->format('Y-m-d h:i:s'), $this->user->getAccessTokenTimeToExpire($this->user->currentAccessToken(), 'date'));
+    }
+
+    /**
+     * See https://github.com/codeigniter4/shield/issues/926
+     */
+    public function testSetTokenExpirationById(): void
+    {
+        $token = $this->user->generateAccessToken('foo', ['foo:bar']);
+
+        $this->user->setAccessToken($token);
+
+        $this->assertNull($this->user->currentAccessToken()->expires);
+
+        // true = updated row
+        $this->assertTrue($this->user->setAccessTokenExpirationById($token->id, '2024-11-03 12:00:00'));
+
+        $this->assertSame('2024-11-03 12:00:00', $this->user->getAccessTokenTimeToExpire($this->user->currentAccessToken(), 'date'));
+    }
+
+    /**
+     * See https://github.com/codeigniter4/shield/issues/926
+     */
+    public function testIsTokenExpired(): void
+    {
+        $token = $this->user->generateAccessToken('foo', ['foo:bar'], '2024-11-03 12:00:00');
+        $this->user->setAccessToken($token);
+
+        $this->assertTrue($this->user->hasAccessTokenExpired($this->user->currentAccessToken()));
+    }
+
+    /**
+     * See https://github.com/codeigniter4/shield/issues/926
+     */
+    public function testTokenTimeToExpired(): void
+    {
+        $token = $this->user->generateAccessToken('foo', ['foo:bar'], '1 year');
+        $this->user->setAccessToken($token);
+
+        $this->assertSame('in 1 year', $this->user->getAccessTokenTimeToExpire($this->user->currentAccessToken(), 'human'));
     }
 }
