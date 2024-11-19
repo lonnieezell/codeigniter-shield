@@ -36,7 +36,7 @@ class ValidationRules
 
     public function getRegistrationRules(): array
     {
-        $setting = setting('Validation.registration');
+        $setting = shieldSetting('Validation.registration');
         if ($setting !== null) {
             return $setting;
         }
@@ -66,7 +66,7 @@ class ValidationRules
 
     public function getLoginRules(): array
     {
-        return setting('Validation.login') ?? [
+        return shieldSetting('Validation.login') ?? [
             // 'username' => $this->config->usernameValidationRules,
             'email'    => $this->config->emailValidationRules,
             'password' => $this->getPasswordRules(),

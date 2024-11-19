@@ -9,7 +9,7 @@ public function loginRedirect(): string
 {
     $url = auth()->user()->inGroup('admin')
         ? '/admin'
-        : setting('Auth.redirects')['login'];
+        : shieldSetting('Auth.redirects')['login'];
 
     return $this->getUrl($url);
 }
@@ -27,7 +27,7 @@ public function loginRedirect(): string
         return '/admin';
     }
 
-    $url = setting('Auth.redirects')['login'];
+    $url = shieldSetting('Auth.redirects')['login'];
 
     return $this->getUrl($url);
 }
@@ -40,7 +40,7 @@ You can customize where a user is redirected to after registration in the `regis
 ```php
 public function registerRedirect(): string
 {
-    $url = setting('Auth.redirects')['register'];
+    $url = shieldSetting('Auth.redirects')['register'];
 
     return $this->getUrl($url);
 }
@@ -53,7 +53,7 @@ The logout redirect can also be overridden by the `logoutRedirect()` method of t
 ```php
 public function logoutRedirect(): string
 {
-    $url = setting('Auth.redirects')['logout'];
+    $url = shieldSetting('Auth.redirects')['logout'];
 
     return $this->getUrl($url);
 }

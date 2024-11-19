@@ -345,14 +345,14 @@ final class UserTest extends DatabaseTestCase
         $this->user->active = false;
         model(UserModel::class)->save($this->user);
 
-        setting('Auth.actions', ['register' => null]);
+        shieldSetting('Auth.actions', ['register' => null]);
 
         $this->assertTrue($this->user->isActivated());
     }
 
     public function testIsActivatedWhenRequired(): void
     {
-        setting('Auth.actions', ['register' => '\CodeIgniter\Shield\Authentication\Actions\EmailActivator']);
+        shieldSetting('Auth.actions', ['register' => '\CodeIgniter\Shield\Authentication\Actions\EmailActivator']);
         $user = $this->user;
 
         $user->deactivate();
@@ -370,7 +370,7 @@ final class UserTest extends DatabaseTestCase
 
     public function testIsNotActivated(): void
     {
-        setting('Auth.actions', ['register' => '\CodeIgniter\Shield\Authentication\Actions\EmailActivator']);
+        shieldSetting('Auth.actions', ['register' => '\CodeIgniter\Shield\Authentication\Actions\EmailActivator']);
         $user = $this->user;
 
         $user->active = false;

@@ -52,7 +52,7 @@ final class GroupsTest extends TestCase
 
         $this->assertInstanceOf(Group::class, $group);
         $this->assertSame('Admin', $group->title);
-        $this->assertSame(setting('AuthGroups.groups')['admin']['description'], $group->description);
+        $this->assertSame(shieldSetting('AuthGroups.groups')['admin']['description'], $group->description);
         $this->assertSame('admin', $group->alias);
     }
 

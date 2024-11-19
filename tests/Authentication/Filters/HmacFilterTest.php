@@ -118,7 +118,7 @@ final class HmacFilterTest extends AbstractFilterTestCase
         $token = $user->generateHmacToken('foo');
 
         // Activation only required with email activation
-        setting('Auth.actions', ['register' => null]);
+        shieldSetting('Auth.actions', ['register' => null]);
 
         $result = $this->withHeaders(['Authorization' => 'HMAC-SHA256 ' . $this->generateRawHeaderToken($token->secret, $token->rawSecretKey, '')])
             ->get('protected-route');
@@ -127,14 +127,14 @@ final class HmacFilterTest extends AbstractFilterTestCase
         $result->assertSee('Protected');
 
         // Now require user activation and try again
-        setting('Auth.actions', ['register' => '\CodeIgniter\Shield\Authentication\Actions\EmailActivator']);
+        shieldSetting('Auth.actions', ['register' => '\CodeIgniter\Shield\Authentication\Actions\EmailActivator']);
 
         $result = $this->withHeaders(['Authorization' => 'HMAC-SHA256 ' . $this->generateRawHeaderToken($token->secret, $token->rawSecretKey, '')])
             ->get('protected-route');
 
         $result->assertStatus(403);
 
-        setting('Auth.actions', ['register' => null]);
+        shieldSetting('Auth.actions', ['register' => null]);
     }
 
     protected function generateRawHeaderToken(string $secret, string $secretKey, string $body): string

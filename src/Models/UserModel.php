@@ -153,7 +153,7 @@ class UserModel extends BaseModel
      */
     public function addToDefaultGroup(User $user): void
     {
-        $defaultGroup = setting('AuthGroups.defaultGroup');
+        $defaultGroup = shieldSetting('AuthGroups.defaultGroup');
 
         /** @var GroupModel $groupModel */
         $groupModel = model(GroupModel::class);

@@ -27,7 +27,7 @@ class LoginController extends BaseController
     public function mobileLogin()
     {
         // Validate credentials
-        $rules = setting('Validation.login') ?? [
+        $rules = shieldSetting('Validation.login') ?? [
             'email' => config('Auth')->emailValidationRules,
             'password' => [
                 'label' => 'Auth.password',
@@ -46,7 +46,7 @@ class LoginController extends BaseController
         }
 
         // Get the credentials for login
-        $credentials             = $this->request->getPost(setting('Auth.validFields'));
+        $credentials             = $this->request->getPost(shieldSetting('Auth.validFields'));
         $credentials             = array_filter($credentials);
         $credentials['password'] = $this->request->getPost('password');
 

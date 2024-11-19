@@ -39,8 +39,8 @@ abstract class TestCase extends CIUnitTestCase
         helper(['auth', 'setting']);
 
         // Ensure from email is available anywhere during Tests
-        setting('Email.fromEmail', 'foo@example.com');
-        setting('Email.fromName', 'John Smith');
+        shieldSetting('Email.fromEmail', 'foo@example.com');
+        shieldSetting('Email.fromName', 'John Smith');
 
         // Clear any actions
         $config          = config('Auth');

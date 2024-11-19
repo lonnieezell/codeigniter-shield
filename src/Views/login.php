@@ -44,7 +44,7 @@
                     </div>
 
                     <!-- Remember me -->
-                    <?php if (setting('Auth.sessionConfig')['allowRemembering']): ?>
+                    <?php if (shieldSetting('Auth.sessionConfig')['allowRemembering']): ?>
                         <div class="form-check">
                             <label class="form-check-label">
                                 <input type="checkbox" name="remember" class="form-check-input" <?php if (old('remember')): ?> checked<?php endif ?>>
@@ -57,11 +57,11 @@
                         <button type="submit" class="btn btn-primary btn-block"><?= lang('Auth.login') ?></button>
                     </div>
 
-                    <?php if (setting('Auth.allowMagicLinkLogins')) : ?>
+                    <?php if (shieldSetting('Auth.allowMagicLinkLogins')) : ?>
                         <p class="text-center"><?= lang('Auth.forgotPassword') ?> <a href="<?= url_to('magic-link') ?>"><?= lang('Auth.useMagicLink') ?></a></p>
                     <?php endif ?>
 
-                    <?php if (setting('Auth.allowRegistration')) : ?>
+                    <?php if (shieldSetting('Auth.allowRegistration')) : ?>
                         <p class="text-center"><?= lang('Auth.needAccount') ?> <a href="<?= url_to('register') ?>"><?= lang('Auth.register') ?></a></p>
                     <?php endif ?>
 

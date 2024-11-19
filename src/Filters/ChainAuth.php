@@ -54,7 +54,7 @@ class ChainAuth implements FilterInterface
 
                 $authenticator = $auth->getAuthenticator();
 
-                if (setting('Auth.recordActiveDate')) {
+                if (shieldSetting('Auth.recordActiveDate')) {
                     $authenticator->recordActiveDate();
                 }
 

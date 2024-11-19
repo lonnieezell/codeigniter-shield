@@ -42,7 +42,7 @@ class LoginController extends BaseController
             return redirect()->route('auth-action-show');
         }
 
-        return $this->view(setting('Auth.views')['login']);
+        return $this->view(shieldSetting('Auth.views')['login']);
     }
 
     /**
@@ -59,7 +59,7 @@ class LoginController extends BaseController
         }
 
         /** @var array $credentials */
-        $credentials             = $this->request->getPost(setting('Auth.validFields')) ?? [];
+        $credentials             = $this->request->getPost(shieldSetting('Auth.validFields')) ?? [];
         $credentials             = array_filter($credentials);
         $credentials['password'] = $this->request->getPost('password');
         $remember                = (bool) $this->request->getPost('remember');

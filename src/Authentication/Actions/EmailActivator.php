@@ -66,11 +66,11 @@ class EmailActivator implements ActionInterface
         // Send the email
         helper('email');
         $email = emailer(['mailType' => 'html'])
-            ->setFrom(setting('Email.fromEmail'), setting('Email.fromName') ?? '');
+            ->setFrom(shieldSetting('Email.fromEmail'), shieldSetting('Email.fromName') ?? '');
         $email->setTo($userEmail);
         $email->setSubject(lang('Auth.emailActivateSubject'));
         $email->setMessage($this->view(
-            setting('Auth.views')['action_email_activate_email'],
+            shieldSetting('Auth.views')['action_email_activate_email'],
             ['code'  => $code, 'user' => $user, 'ipAddress' => $ipAddress, 'userAgent' => $userAgent, 'date' => $date],
             ['debug' => false]
         ));
@@ -83,7 +83,7 @@ class EmailActivator implements ActionInterface
         $email->clear();
 
         // Display the info page
-        return $this->view(setting('Auth.views')['action_email_activate_show'], ['user' => $user]);
+        return $this->view(shieldSetting('Auth.views')['action_email_activate_show'], ['user' => $user]);
     }
 
     /**
@@ -120,7 +120,7 @@ class EmailActivator implements ActionInterface
         if (! $authenticator->checkAction($identity, $postedToken)) {
             session()->setFlashdata('error', lang('Auth.invalidActivateToken'));
 
-            return $this->view(setting('Auth.views')['action_email_activate_show']);
+            return $this->view(shieldSetting('Auth.views')['action_email_activate_show']);
         }
 
         $user = $authenticator->getUser();

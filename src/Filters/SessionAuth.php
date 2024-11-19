@@ -52,7 +52,7 @@ class SessionAuth implements FilterInterface
         $authenticator = auth('session')->getAuthenticator();
 
         if ($authenticator->loggedIn()) {
-            if (setting('Auth.recordActiveDate')) {
+            if (shieldSetting('Auth.recordActiveDate')) {
                 $authenticator->recordActiveDate();
             }
 

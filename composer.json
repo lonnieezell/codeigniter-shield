@@ -25,8 +25,7 @@
         "slack": "https://codeigniterchat.slack.com"
     },
     "require": {
-        "php": "^7.4.3 || ^8.0",
-        "codeigniter4/settings": "^2.1"
+        "php": "^7.4.3 || ^8.0"
     },
     "require-dev": {
         "codeigniter/coding-standard": "1.7.*",
@@ -46,7 +45,8 @@
     },
     "suggest": {
         "ext-curl": "Required to use the password validation rule via PwnedValidator class.",
-        "ext-openssl": "Required to use the JWT Authenticator."
+        "ext-openssl": "Required to use the JWT Authenticator.",
+        "codeigniter4/settings": "Required to store groups and permissions in database"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

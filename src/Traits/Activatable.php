@@ -60,6 +60,6 @@ trait Activatable
      */
     private function shouldActivate(): bool
     {
-        return strpos(setting('Auth.actions')['register'] ?? '', 'Activator') !== false;
+        return strpos(shieldSetting('Auth.actions')['register'] ?? '', 'Activator') !== false;
     }
 }

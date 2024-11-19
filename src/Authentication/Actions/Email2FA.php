@@ -50,7 +50,7 @@ class Email2FA implements ActionInterface
 
         $this->createIdentity($user);
 
-        return $this->view(setting('Auth.views')['action_email_2fa'], ['user' => $user]);
+        return $this->view(shieldSetting('Auth.views')['action_email_2fa'], ['user' => $user]);
     }
 
     /**
@@ -89,11 +89,11 @@ class Email2FA implements ActionInterface
         // Send the user an email with the code
         helper('email');
         $email = emailer(['mailType' => 'html'])
-            ->setFrom(setting('Email.fromEmail'), setting('Email.fromName') ?? '');
+            ->setFrom(shieldSetting('Email.fromEmail'), shieldSetting('Email.fromName') ?? '');
         $email->setTo($user->email);
         $email->setSubject(lang('Auth.email2FASubject'));
         $email->setMessage($this->view(
-            setting('Auth.views')['action_email_2fa_email'],
+            shieldSetting('Auth.views')['action_email_2fa_email'],
             ['code'  => $identity->secret, 'user' => $user, 'ipAddress' => $ipAddress, 'userAgent' => $userAgent, 'date' => $date],
             ['debug' => false]
         ));
@@ -105,7 +105,7 @@ class Email2FA implements ActionInterface
         // Clear the email
         $email->clear();
 
-        return $this->view(setting('Auth.views')['action_email_2fa_verify']);
+        return $this->view(shieldSetting('Auth.views')['action_email_2fa_verify']);
     }
 
     /**
@@ -131,7 +131,7 @@ class Email2FA implements ActionInterface
         if (! $authenticator->checkAction($identity, $postedToken)) {
             session()->setFlashdata('error', lang('Auth.invalid2FAToken'));
 
-            return $this->view(setting('Auth.views')['action_email_2fa_verify']);
+            return $this->view(shieldSetting('Auth.views')['action_email_2fa_verify']);
         }
 
         // Get our login redirect url

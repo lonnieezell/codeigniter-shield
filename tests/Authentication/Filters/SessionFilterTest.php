@@ -73,7 +73,7 @@ final class SessionFilterTest extends AbstractFilterTestCase
         $user = fake(UserModel::class, ['active' => false]);
 
         // Activation only required with email activation
-        setting('Auth.actions', ['register' => null]);
+        shieldSetting('Auth.actions', ['register' => null]);
 
         $result = $this->actingAs($user)
             ->get('protected-route');
@@ -82,7 +82,7 @@ final class SessionFilterTest extends AbstractFilterTestCase
         $result->assertSee('Protected');
 
         // Now require user activation and try again
-        setting('Auth.actions', ['register' => '\CodeIgniter\Shield\Authentication\Actions\EmailActivator']);
+        shieldSetting('Auth.actions', ['register' => '\CodeIgniter\Shield\Authentication\Actions\EmailActivator']);
 
         $result = $this->actingAs($user)
             ->get('protected-route');
@@ -91,7 +91,7 @@ final class SessionFilterTest extends AbstractFilterTestCase
         // User should be logged out
         $this->assertNull(auth('session')->id());
 
-        setting('Auth.actions', ['register' => null]);
+        shieldSetting('Auth.actions', ['register' => null]);
     }
 
     public function testStoreRedirectsToEntraceUrlIntoSession(): void

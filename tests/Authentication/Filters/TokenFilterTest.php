@@ -103,7 +103,7 @@ final class TokenFilterTest extends AbstractFilterTestCase
         $token = $user->generateAccessToken('foo');
 
         // Activation only required with email activation
-        setting('Auth.actions', ['register' => null]);
+        shieldSetting('Auth.actions', ['register' => null]);
 
         $result = $this->withHeaders(['Authorization' => 'Bearer ' . $token->raw_token])
             ->get('protected-route');
@@ -112,13 +112,13 @@ final class TokenFilterTest extends AbstractFilterTestCase
         $result->assertSee('Protected');
 
         // Now require user activation and try again
-        setting('Auth.actions', ['register' => '\CodeIgniter\Shield\Authentication\Actions\EmailActivator']);
+        shieldSetting('Auth.actions', ['register' => '\CodeIgniter\Shield\Authentication\Actions\EmailActivator']);
 
         $result = $this->withHeaders(['Authorization' => 'Bearer ' . $token->raw_token])
             ->get('protected-route');
 
         $result->assertStatus(403);
 
-        setting('Auth.actions', ['register' => null]);
+        shieldSetting('Auth.actions', ['register' => null]);
     }
 }

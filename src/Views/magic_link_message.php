@@ -11,7 +11,7 @@
 
             <p><b><?= lang('Auth.checkYourEmail') ?></b></p>
 
-            <p><?= lang('Auth.magicLinkDetails', [setting('Auth.magicLinkLifetime') / 60]) ?></p>
+            <p><?= lang('Auth.magicLinkDetails', [shieldSetting('Auth.magicLinkLifetime') / 60]) ?></p>
         </div>
     </div>
 </div>

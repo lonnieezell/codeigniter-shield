@@ -251,7 +251,7 @@ trait Authorizable
         $this->populateGroups();
 
         // Get the group matrix
-        $matrix = setting('AuthGroups.matrix');
+        $matrix = shieldSetting('AuthGroups.matrix');
 
         foreach ($permissions as $permission) {
             // Permission must contain a scope and action
@@ -406,6 +406,6 @@ trait Authorizable
      */
     private function getConfigPermissions(): array
     {
-        return array_keys(setting('AuthGroups.permissions'));
+        return array_keys(shieldSetting('AuthGroups.permissions'));
     }
 }

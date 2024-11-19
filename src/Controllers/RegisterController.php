@@ -60,7 +60,7 @@ class RegisterController extends BaseController
         }
 
         // Check if registration is allowed
-        if (! setting('Auth.allowRegistration')) {
+        if (! shieldSetting('Auth.allowRegistration')) {
             return redirect()->back()->withInput()
                 ->with('error', lang('Auth.registerDisabled'));
         }
@@ -73,7 +73,7 @@ class RegisterController extends BaseController
             return redirect()->route('auth-action-show');
         }
 
-        return $this->view(setting('Auth.views')['register']);
+        return $this->view(shieldSetting('Auth.views')['register']);
     }
 
     /**
@@ -86,7 +86,7 @@ class RegisterController extends BaseController
         }
 
         // Check if registration is allowed
-        if (! setting('Auth.allowRegistration')) {
+        if (! shieldSetting('Auth.allowRegistration')) {
             return redirect()->back()->withInput()
                 ->with('error', lang('Auth.registerDisabled'));
         }
@@ -151,7 +151,7 @@ class RegisterController extends BaseController
      */
     protected function getUserProvider(): UserModel
     {
-        $provider = model(setting('Auth.userProvider'));
+        $provider = model(shieldSetting('Auth.userProvider'));
 
         assert($provider instanceof UserModel, 'Config Auth.userProvider is not a valid UserProvider.');
 
