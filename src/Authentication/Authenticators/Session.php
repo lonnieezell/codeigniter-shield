@@ -235,9 +235,7 @@ class Session implements AuthenticatorInterface
      */
     public function checkAction(UserIdentity $identity, string $token): bool
     {
-        $user = ($this->loggedIn() || $this->isPending()) ? $this->user : null;
-
-        if ($user === null) {
+        if (! $this->loggedIn() && ! $this->isPending()) {
             throw new LogicException('Cannot get the User.');
         }
 
@@ -246,15 +244,13 @@ class Session implements AuthenticatorInterface
         }
 
         // On success - remove the identity
-        $this->userIdentityModel->deleteIdentitiesByType($user, $identity->type);
+        $this->userIdentityModel->deleteIdentitiesByType($this->user, $identity->type);
 
         // Clean up our session
         $this->removeSessionUserKey('auth_action');
         $this->removeSessionUserKey('auth_action_message');
 
-        $this->user = $user;
-
-        $this->completeLogin($user);
+        $this->completeLogin($this->user);
 
         return true;
     }
