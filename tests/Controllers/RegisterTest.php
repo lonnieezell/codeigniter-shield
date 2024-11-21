@@ -329,6 +329,35 @@ final class RegisterTest extends DatabaseTestCase
         );
     }
 
+    public function testRegisterActionRedirectsIfTokenNotMatch(): void
+    {
+        // Ensure our action is defined
+        $config                      = config('Auth');
+        $config->actions['register'] = EmailActivator::class;
+        Factories::injectMock('config', 'Auth', $config);
+
+        // Already registered but not yet activated and logged in.
+        $result = $this->post('/register', [
+            'email'            => 'foo@example.com',
+            'username'         => 'foo',
+            'password'         => 'abkdhflkjsdflkjasd;lkjf',
+            'password_confirm' => 'abkdhflkjsdflkjasd;lkjf',
+        ]);
+
+        // Should have been redirected to the action's page.
+        $result->assertRedirectTo('/auth/a/show');
+
+        // Attempted to send an invalid token.
+        $result = $this->withSession()->post('/auth/a/verify', [
+            'token' => 'invalid-token',
+        ]);
+
+        // Should have been redirected to the previous page.
+        $result->assertStatus(302);
+        $result->assertRedirect();
+        $result->assertSee(lang('Auth.invalidActivateToken'));
+    }
+
     protected function setupConfig(): void
     {
         $config             = config('Validation');

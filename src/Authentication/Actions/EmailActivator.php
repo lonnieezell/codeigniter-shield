@@ -118,9 +118,7 @@ class EmailActivator implements ActionInterface
 
         // No match - let them try again.
         if (! $authenticator->checkAction($identity, $postedToken)) {
-            session()->setFlashdata('error', lang('Auth.invalidActivateToken'));
-
-            return $this->view(setting('Auth.views')['action_email_activate_show']);
+            return redirect()->back()->with('error', lang('Auth.invalidActivateToken'));
         }
 
         $user = $authenticator->getUser();
