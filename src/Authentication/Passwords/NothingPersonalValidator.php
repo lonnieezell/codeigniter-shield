@@ -95,7 +95,7 @@ class NothingPersonalValidator extends BaseValidator implements ValidatorInterfa
 
             foreach ($personalFields as $value) {
                 if (! empty($user->{$value})) {
-                    $needles[] = strtolower($user->{$value});
+                    $needles[] = strtolower((string) $user->{$value});
                 }
             }
 
