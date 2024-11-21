@@ -10,90 +10,90 @@ parameters:
       collectors:
         - type: bool
           must:
-          - type: className
-            regex: .*[A-Za-z]+Model$
+          - type: class
+            value: .*[A-Za-z]+Model$
           must_not:
           - type: directory
-            regex: vendor/.*
+            value: vendor/.*
     - name: Vendor Model
       collectors:
         - type: bool
           must:
-          - type: className
-            regex: .*[A-Za-z]+Model$
+          - type: class
+            value: .*[A-Za-z]+Model$
           - type: directory
-            regex: vendor/.*
+            value: vendor/.*
     - name: Controller
       collectors:
         - type: bool
           must:
-          - type: className
-            regex: .*\/Controllers\/.*
+          - type: class
+            value: .*\/Controllers\/.*
           must_not:
           - type: directory
-            regex: vendor/.*
+            value: vendor/.*
     - name: Vendor Controller
       collectors:
         - type: bool
           must:
-          - type: className
-            regex: .*\/Controllers\/.*
+          - type: class
+            value: .*\/Controllers\/.*
           - type: directory
-            regex: vendor/.*
+            value: vendor/.*
     - name: Config
       collectors:
         - type: bool
           must:
           - type: directory
-            regex: src/Config/.*
+            value: src/Config/.*
           must_not:
-          - type: className
-            regex: .*Services
+          - type: class
+            value: .*Services
           - type: directory
-            regex: vendor/.*
+            value: vendor/.*
     - name: Vendor Config
       collectors:
         - type: bool
           must:
           - type: directory
-            regex: vendor/.*/Config/.*
+            value: vendor/.*/Config/.*
           must_not:
-          - type: className
-            regex: .*Services
+          - type: class
+            value: .*Services
     - name: Entity
       collectors:
         - type: bool
           must:
           - type: directory
-            regex: src/Entities/.*
+            value: src/Entities/.*
           must_not:
           - type: directory
-            regex: vendor/.*
+            value: vendor/.*
     - name: Vendor Entity
       collectors:
         - type: bool
           must:
           - type: directory
-            regex: vendor/.*/Entities/.*
+            value: vendor/.*/Entities/.*
     - name: View
       collectors:
         - type: bool
           must:
           - type: directory
-            regex: src/Views/.*
+            value: src/Views/.*
           must_not:
           - type: directory
-            regex: vendor/.*
+            value: vendor/.*
     - name: Vendor View
       collectors:
         - type: bool
           must:
           - type: directory
-            regex: vendor/.*/Views/.*
+            value: vendor/.*/Views/.*
     - name: Service
       collectors:
-        - type: className
-          regex: .*Services.*
+        - type: class
+          value: .*Services.*
   ruleset:
     Entity:
       - Config
