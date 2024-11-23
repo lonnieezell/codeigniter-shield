@@ -54,3 +54,17 @@ class UserModel extends ShieldUserModel
     }
 }
 ```
+
+## Creating a Custom User Entity
+
+Starting from v1.2.0, `UserModel` in Shield has the `createNewUser()` method to
+create a new User Entity.
+
+```php
+$user = $userModel->createNewUser($data);
+```
+
+It takes an optional user data array as the first argument, and passes it to the
+constructor of the `$returnType` class.
+
+If your custom User entity cannot be instantiated in this way, override this method.

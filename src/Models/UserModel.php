@@ -397,4 +397,14 @@ class UserModel extends BaseModel
             throw new LogicException('Return type must be a subclass of ' . User::class);
         }
     }
+
+    /**
+     * Returns a new User Entity.
+     *
+     * @param array<string, array<array-key, mixed>|bool|float|int|object|string|null> $data (Optional) user data
+     */
+    public function createNewUser(array $data = []): User
+    {
+        return new $this->returnType($data);
+    }
 }
