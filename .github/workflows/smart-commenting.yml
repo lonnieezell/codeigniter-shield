@@ -1,34 +1,37 @@
 name: Smart Commenting
+
 on:
-  pull_request:
-    types:
-      - labeled
+    pull_request:
+      branches:
+        - develop
+      paths:
+        - '**.php'
+        - 'composer.*'
+        - '.github/workflows/smart-commenting.yml'
+      types:
+        - labeled
+    push:
+      branches:
+        - develop
+      paths:
+        - '**.php'
+        - 'composer.*'
+        - '.github/workflows/smart-commenting.yml'
+permissions:
+  issues: write
+  pull-requests: write
+  contents: read
 jobs:
 
   add-comment-for-GPG-Signing:
-    if: github.event.label.name == 'GPG-Signing needed'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    steps:
-      - name: Add comment for GPG-sign
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            You must GPG-sign your work, certifying that you either wrote the work or otherwise have the right to pass it on to an open-source project. See Developer's Certificate of Origin.
-            See [signing][1].
+    uses: codeigniter4/.github/.github/workflows/label-signing.yml@main
 
-            **Note that all your commits must be signed.** If you have an unsigned commit, you can sign the previous commits by referring to [gpg-signing-old-commits][2].
-
-            [1]: https://github.com/codeigniter4/CodeIgniter4/blob/develop/contributing/pull_request.md#signing
-            [2]: https://github.com/codeigniter4/CodeIgniter4/blob/develop/contributing/workflow.md#gpg-signing-old-commits
+  add-comment-for-conflict:
+    uses: codeigniter4/.github/.github/workflows/label-add-conflict-all-pr.yml@main
 
   add-comment-for-tests:
     if: github.event.label.name == 'tests needed'
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     steps:
       - name: Add comment for PHPUnit test
         uses: peter-evans/create-or-update-comment@v4
@@ -43,20 +46,4 @@ jobs:
             See  [unit testing][1] for more info.
 
             [1]: https://github.com/codeigniter4/CodeIgniter4/blob/develop/contributing/pull_request.md#unit-testing
-            
-  add-comment-for-conflict:
-    if: github.event.label.name == 'stale'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    steps:
-      - name: Add comment for resolving a merge conflict
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            We detected conflicts in your PR against the base branch :speak_no_evil:
-            You may want to sync :arrows_counterclockwise: your branch with upstream!
-            See [resolving a merge conflict using the Git][1] for more info.
 
-            [1]: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line
