@@ -189,6 +189,15 @@ class Auth extends BaseConfig
 
     /**
      * --------------------------------------------------------------------
+     * Resend Code Verification Time for re-new the code and send it again
+     * --------------------------------------------------------------------
+     * Specify in integer how many seconds of delay time you want to
+     * re-new the code and send it from email. The default is 60 seconds.
+     */
+    public int $resendCodeVerification = 60;
+
+    /**
+     * --------------------------------------------------------------------
      * Session Authenticator Configuration
      * --------------------------------------------------------------------
      * These settings only apply if you are using the Session Authenticator

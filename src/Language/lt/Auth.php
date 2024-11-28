@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'Kodas buvo neteisingas.',
     'needActivate'          => 'Turite baigti registraciją panaudodami kodą, išsiųstą Jums el. pašto adresu.',
     'activationBlocked'     => 'Prieš prisijungdami turite aktyvuoti paskyrą.',
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Groups
     'unknownGroup' => '{0} nėra egzistuojanti grupė.',

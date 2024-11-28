@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'Kod nije ispravan.',
     'needActivate'          => 'Morate dovršiti registraciju potvrdom koda poslatog na vašu email adresu.',
     'activationBlocked'     => 'Morate aktivirati vaš nalog pre pristupanja sistemu.',
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Groups
     'unknownGroup' => '{0} neispravna grupa.',

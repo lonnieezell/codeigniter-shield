@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'Kod yanlıştı.',
     'needActivate'          => 'E-posta adresinize gönderilen kodu onaylayarak kaydınızı tamamlamanız gerekmektedir.',
     'activationBlocked'     => 'Giriş yapmadan önce hesabınızı etkinleştirmeniz gerekmektedir.',
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Groups
     'unknownGroup' => '{0} geçerli bir grup değil.',

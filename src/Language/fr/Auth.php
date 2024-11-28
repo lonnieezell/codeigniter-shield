@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'Le code était incorrect.',
     'needActivate'          => 'Complétez votre inscription en confirmant le code envoyé à votre email.',
     'activationBlocked'     => 'Vous devez activer votre compte avant de vous connecter.',
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Groups
     'unknownGroup' => '{0} n\'est pas un groupe valide.',

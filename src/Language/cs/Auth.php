@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'Kód byl nesprávný',
     'needActivate'          => 'Registraci musíte dokončit potvrzením kódu zaslaného na vaši e-mailovou adresu.',
     'activationBlocked'     => 'Před přihlášením musíte svůj účet aktivovat.',
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Groups
     'unknownGroup' => '{0} není platná skupina.',

@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'کد صحیح نمی باشد.',
     'needActivate'          => 'شما باید با ارائه کد ارسال شده به ایمیلتان، ثبت نام را تکمیل کنید.',
     'activationBlocked'     => 'قبل از تلاش برای ورود، باید اکانت خود را فعال کنید.',
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Groups
     'unknownGroup' => '{0} گروهی معتبر نیست.',

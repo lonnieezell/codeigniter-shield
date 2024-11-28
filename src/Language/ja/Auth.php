@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'コードが間違っています。', // 'The code was incorrect.'
     'needActivate'          => 'メールアドレスに送信されたコードを確認し、登録を完了する必要があります。', // 'You must complete your registration by confirming the code sent to your email address.'
     'activationBlocked'     => 'ログインする前にアカウントを有効化する必要があります。', // 'You must activate your account before logging in.'
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Groups
     'unknownGroup' => '{0} は有効なグループではありません。', // '{0} is not a valid group.'

@@ -54,36 +54,56 @@ class EmailActivator implements ActionInterface
             );
         }
 
-        $code = $this->createIdentity($user);
+        $userIdentities = $user->identities;
+        $userIdentity   = array_pop($userIdentities);
 
-        /** @var IncomingRequest $request */
-        $request = service('request');
+        $now             = new Time('now');
+        $identityCreated = Time::parse($userIdentity->created_at);
 
-        $ipAddress = $request->getIPAddress();
-        $userAgent = (string) $request->getUserAgent();
-        $date      = Time::now()->toDateTimeString();
+        $timDiff = $identityCreated->difference($now);
 
-        // Send the email
-        helper('email');
-        $email = emailer(['mailType' => 'html'])
-            ->setFrom(setting('Email.fromEmail'), setting('Email.fromName') ?? '');
-        $email->setTo($userEmail);
-        $email->setSubject(lang('Auth.emailActivateSubject'));
-        $email->setMessage($this->view(
-            setting('Auth.views')['action_email_activate_email'],
-            ['code'  => $code, 'user' => $user, 'ipAddress' => $ipAddress, 'userAgent' => $userAgent, 'date' => $date],
-            ['debug' => false]
-        ));
+        $configRCV = setting('Auth.resendCodeVerification');
 
-        if ($email->send(false) === false) {
-            throw new RuntimeException('Cannot send email for user: ' . $user->email . "\n" . $email->printDebugger(['headers']));
+        $resendCodeVerificationTime = ((int) $configRCV - $timDiff->getSeconds());
+
+        if ($timDiff->getSeconds() >= (int) $configRCV || $userIdentity->secret2 === null) {
+            $code = $this->createIdentity($user);
+
+            /** @var IncomingRequest $request */
+            $request = service('request');
+
+            $ipAddress = $request->getIPAddress();
+            $userAgent = (string) $request->getUserAgent();
+            $date      = Time::now()->toDateTimeString();
+
+            // Send the email
+            helper('email');
+            $email = emailer(['mailType' => 'html'])
+                ->setFrom(setting('Email.fromEmail'), setting('Email.fromName') ?? '');
+            $email->setTo($userEmail);
+            $email->setSubject(lang('Auth.emailActivateSubject'));
+            $email->setMessage($this->view(
+                setting('Auth.views')['action_email_activate_email'],
+                ['code'  => $code, 'user' => $user, 'ipAddress' => $ipAddress, 'userAgent' => $userAgent, 'date' => $date],
+                ['debug' => false]
+            ));
+
+            if ($email->send(false) === false) {
+                throw new RuntimeException('Cannot send email for user: ' . $user->email . "\n" . $email->printDebugger(['headers']));
+            }
+
+            /** @var UserIdentityModel $identityModel */
+            model(UserIdentityModel::class)
+                ->where('secret', $code)
+                ->set(['secret2' => 'SEND'])
+                ->update();
+
+            // Clear the email
+            $email->clear();
         }
 
-        // Clear the email
-        $email->clear();
-
         // Display the info page
-        return $this->view(setting('Auth.views')['action_email_activate_show'], ['user' => $user]);
+        return $this->view(setting('Auth.views')['action_email_activate_show'], ['user' => $user, 'remainingTime' => $resendCodeVerificationTime]);
     }
 
     /**

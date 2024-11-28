@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'Кода е невалиден.',
     'needActivate'          => 'Трябва да завършите регистрацията си, като потвърдите кода, изпратен на вашия имейл адрес.',
     'activationBlocked'     => 'Трябва да активирате акаунта си, преди да влезете.',
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Групи
     'unknownGroup' => '{0} не е валидна група.',

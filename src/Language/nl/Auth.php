@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'De code was niet correct.',
     'needActivate'          => 'Je moet je registratie voltooien door de code te bevestigen die naar je e-mailadres is gestuurd.',
     'activationBlocked'     => 'Je moet je account activeren voordat je kunt inloggen.',
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Groups
     'unknownGroup' => '{0} is geen geldige groep.',

@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'Koden var fel.',
     'needActivate'          => 'Du måste slutföra registreringen genom att ange aktiveringskoden som skickats till din epostadress.',
     'activationBlocked'     => 'Du måste aktivera ditt konto innan du kan logga in.',
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Groups
     'unknownGroup' => '{0} är inte en giltig grupp.',

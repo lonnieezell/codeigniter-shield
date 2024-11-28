@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'الرمز غير صحيح',
     'needActivate'          => 'يجب عليك إكمال تسجيل حسابك عن طريق تأكيد الرمز المرسل إلى عنوان بريدك الإلكتروني.',
     'activationBlocked'     => 'يجب عليك تفعيل حسابك قبل تسجيل الدخول.',
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Groups
     'unknownGroup' => '{0} ليست مجموعة صالحة.',

@@ -29,6 +29,8 @@
                     <button type="submit" class="btn btn-primary btn-block"><?= lang('Auth.send') ?></button>
                 </div>
 
+                <p><?= lang('Auth.remainingTime', [$remainingTime]) ?></p>
+
             </form>
         </div>
     </div>

@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'Kode tidak sesuai.',
     'needActivate'          => 'Anda harus menyelesaikan registrasi Anda dengan mengonfirmasi kode yang dikirim ke alamat email Anda.',
     'activationBlocked'     => 'Anda harus mengaktifkan akun Anda sebelum masuk.',
+    'remainingTime'         => 'Anda dapat menerima kode baru dalam {0, number} detik lagi.',
 
     // Groups
     'unknownGroup' => '{0} bukan grup yang sah.',

@@ -107,6 +107,7 @@ return [
     'invalidActivateToken'  => 'Код неверный.',
     'needActivate'          => 'Вы должны завершить регистрацию, подтвердив код, отправленный на ваш адрес электронной почты.',
     'activationBlocked'     => 'Вы должны активировать свою учетную запись перед входом в систему.',
+    'remainingTime'         => '(To be translated) You can receive a new code in {0, number} seconds.',
 
     // Groups
     'unknownGroup' => '{0} не является действительной группой.',
