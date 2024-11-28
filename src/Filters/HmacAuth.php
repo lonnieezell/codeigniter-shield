@@ -45,10 +45,6 @@ class HmacAuth implements FilterInterface
                 ->setJSON(['message' => lang('Auth.badToken')]);
         }
 
-        if (setting('Auth.recordActiveDate')) {
-            $authenticator->recordActiveDate();
-        }
-
         // Block inactive users when Email Activation is enabled
         $user = $authenticator->getUser();
         if ($user !== null && ! $user->isActivated()) {
@@ -57,6 +53,10 @@ class HmacAuth implements FilterInterface
             return service('response')
                 ->setStatusCode(Response::HTTP_FORBIDDEN)
                 ->setJSON(['message' => lang('Auth.activationBlocked')]);
+        }
+
+        if (setting('Auth.recordActiveDate')) {
+            $authenticator->recordActiveDate();
         }
 
         return $request;
